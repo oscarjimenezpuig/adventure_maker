@@ -2,7 +2,7 @@
 ============================================================
   Fichero: inout.h
   Creado: 17-11-2025
-  Ultima Modificacion: dilluns, 17 de novembre de 2025, 05:30:15
+  Ultima Modificacion: lun 17 nov 2025 11:53:21
   oSCAR jIMENEZ pUIG                                       
 ============================================================
 */
@@ -14,7 +14,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-typedef char* string;
+typedef unsigned int string;
 
 string str_new(const char* c,...);
 

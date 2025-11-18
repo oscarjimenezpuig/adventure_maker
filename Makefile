@@ -81,7 +81,7 @@ check:
 
 #MAKEFILE VARIABLE
 
-NAME =  
-SCRS = 
+NAME = adventure_maker 
+SCRS = inout.c advmake.c
 INCLUDES = #-lX11
 

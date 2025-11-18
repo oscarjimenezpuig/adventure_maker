@@ -2,58 +2,76 @@
 ============================================================
   Fichero: inout.c
   Creado: 17-11-2025
-  Ultima Modificacion: lun 17 nov 2025 14:34:17
+  Ultima Modificacion: dimarts, 18 de novembre de 2025, 05:26:45
   oSCAR jIMENEZ pUIG                                       
 ============================================================
 */
 
-#include "inout.h"
+#include "advmake.h"
+
+#define TFN ".str_fix.txt"
+#define TTN ".str_tmp.txt"
 
 #define EOS '\0'
 
-string strnew(const char* s,...) {
-	const char* TFN=".tmp_str.txt";
+#define BFIX 0 //tipo de buffer fijo
+#define BTMP 1 //tipo de buffer temporal
+
+
+static FILE* fix_file=NULL;
+static FILE* tmp_file=NULL;
+
+static void str_fix_end() {
+	fclose(fix_file);
 	remove(TFN);
-	
-
-
-static string char_add(string s,size_t* size,char c) {
-	if(*size==0) {
-		s=malloc(sizeof(char));
-		if(s) {
-			*s=c;
-			*size=1;
-		}
-	} else {
-		void* p=realloc(s,sizeof(char)*(*size+1));
-		if(p) {
-			s=(string)p;
-			*(s+size)=c;
-			*size=*size+1;
-		}
-	}
-	return s;
-}	
-
-string strnew(const char* s,...) {
-	const char* TFN="tmpstr";
-	string ns=NULL;
-	FILE* f=fopen(TFN,"w+");
-	if(f) {
-		va_list list;
-		va_start(list,s);
-		vfprintf(f,s,list);
-		char c=0;
-		size_t s=0;
-		while((c=getc(f))!=EOF) {
-			ns=char_add(ns,&s,c);
-		}
-		ns=char_add(ns,&s,EOS);
-		//TODO: Eliminar archivo, tmpstr
-	}
-	return ns;
 }
 
-void str_del(string* s) {
+bool str_fix_new(string* s,const char* c,...) {
+	static bool init=false;
+	static fpos_t posf;
+	if(!init) {
+		init=true;
+		remove(TFN);
+		if((fix_file=fopen(TFN,"w+"))) fgetpos(fix_file,&posf);
+		atexit(str_fix_end);
+	}
+	if(fix_file) {
+		s->buf=BFIX;
+		fsetpos(fix_file,&posf);
+		s->pos=posf;
+		va_list list;
+		va_start(list,c);
+		vfprintf(fix_file,c,list);
+		va_end(list);
+		putc(EOS,fix_file);
+		fgetpos(fix_file,&posf);
+		return true;
+	}
+	return false;
+}
+
+static void str_tmp_end() {
+	fclose(tmp_file);
+	remove(TTN);
+}
+
+void str_prt(string s) {
+	FILE* f=(s.buf)?tmp_file:fix_file;
+	fsetpos(f,&(s.pos));
+	char c=0;
+	while((c=getc(f))!=EOS) {
+		putchar(c);
+	}
+}
+
+
+
+
+
+		
+
 
 	
+
+
+

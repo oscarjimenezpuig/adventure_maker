@@ -2,7 +2,7 @@
 ============================================================
   Fichero: advmake.c
   Creado: 17-11-2025
-  Ultima Modificacion: mar 18 nov 2025 14:21:52
+  Ultima Modificacion: dimarts, 18 de novembre de 2025, 19:56:16
   oSCAR jIMENEZ pUIG                                       
 ============================================================
 */
@@ -11,11 +11,12 @@
 
 int main() {
 	string s,t;
-	str_tmp_new(&s,"Hola");
-	str_tmp_new(&t,"Adios");
+	str_inp(&s);
+	str_to_fix(&t);
+	str_inp(&s);
 	str_prt(s);
-	puts("");
+	nln_prt();
 	str_prt(t);
-	puts("");
+	nln_prt();
 	return 0;
 }

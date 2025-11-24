@@ -2,123 +2,53 @@
 ============================================================
   Fichero: object.c
   Creado: 19-11-2025
-  Ultima Modificacion: dimecres, 19 de novembre de 2025, 20:58:19
+  Ultima Modificacion: dilluns, 24 de novembre de 2025, 05:28:20
   oSCAR jIMENEZ pUIG                                       
 ============================================================
 */
 
 #include "advmake.h"
 
-static struct object_s objarr[OBJSIZ];
+static struct object_t objects[OBJECTS];
 
-#define ioa objarr
-#define eoa (objarr+OBJSIZ)
+static object actual=NUL;
 
-static void objini() {
-	//inicio de todos los objects
-	object p=ioa;
-	while(p!=eoa) {
-		p->type=0;
+static void objinit() {
+	struct object_t *p=objects;
+	while(p!=objects+OBJECTS) {
+		p->id=p-objects;
+		p->pre=NULL;
+		p->post=NULL;
 		p++;
 	}
 }
 
-static object objfree() {
-	object p=ioa;
-	while(p!=eoa) {
-		if(p->type==0) return p;
-		p++;
+u1 objnew(u1 id,Pre pre,Post post) {
+	static u1 inited=0;
+	if(!inited && (inited==1)) objinit();
+	if(id!=NUL) {
+		objects[id].pre=pre;
+		objects[id].post=post;
+		return 1;
 	}
-	return NULL;
+	return 0;
 }
 
-object objnew(u1 t,char* n) {
-	static u1 init=0;
-	if(!init) {
-		init=1;
-		objini();
+void objini(object o) {
+	actual=o;
+}
+
+void objnxt(object o) {
+	actual=o;
+}
+
+u1 objexe() {
+	if(actual) {
+		struct object_t* oa=objects+actual;
+		//oa->pre();
+		//TODO Programar la orden ask que devuelve desde el parser una cadena de argumentos
+		//oa->post;
+		return 1;
 	}
-	object o=objfree();
-	if(o && t) {
-		o->type=t;
-		str(o->name,n);
-		o->container=NULL;
-	}
-	return o;
+	return 0;
 }
-
-u1 objbycnd(u1 sos,object* os,condition c) {
-	object p=ioa;
-	object* pos=os;
-	while(p!=eoa && pos-os<sos) {
-		if(c(p)) *pos++=p;
-		p++;
-	}
-	return pos-os;
-}
-
-s1 objsizcon(object a) {
-	if(fis(a->type,COGEDOR)) {
-		object p=ioa;
-		s1 size=0;
-		while(p!=eoa) {
-			if(p->container==a && a!=p) ++size;
-			p++;
-		}
-		return size;
-	}
-	return -1;
-}
-
-s1 objisvis(object p,object a) {
-	return (p->container==a->container)?0:-1;
-}
-
-s1 objcandrp(object p,object c) {
-	if(c->container!=p) {
-		if(objisvis(p,c)) {
-			s1 cc=objsizcon(p);
-			if(cc!=-1 && cc<p->capacity) {
-				if(fis(c->type,COGIBLE)) return 0;
-				else return -2;
-			} else return -1;
-		} else return -3;
-	} else return -4;
-}
-
-s1 objdrp(object p,object c) {
-	s1 oct=objcandrp(p,c);
-	if(oct==0) c->container=p;
-	return oct;
-}
-
-s1 objcango(object p,object s) {
-	if(fis(s->type,CONEXION)) {
-		if(s->open) return 0;
-		else return -2;
-	} else return -1;
-}
-		
-s1 objgo(object p,object s) {
-	s1 ocg=objcango(p,s);
-	if(ocg==0) p->container=(s->conector)->container;
-	return ocg;
-}
-
-s1 objcanopn(object c,object k) {
-	if(fis(c->type,CONEXION)) {
-		if(c->open==0) {
-			if(c->key && c->key==k) return 0;
-			else return -3;
-		} else return -2;
-	} else return -1;
-}
-
-s1 objopn(object c,object k) {
-	s1 oco=objcanopn(c,k);
-	if(oco==0) c->open=1;
-	return oco;
-}
-
-
-	

@@ -2,7 +2,7 @@
 ============================================================
   Fichero: advmake.h
   Creado: 17-11-2025
-  Ultima Modificacion: dimecres, 19 de novembre de 2025, 20:57:41
+  Ultima Modificacion: dilluns, 24 de novembre de 2025, 05:26:04
   oSCAR jIMENEZ pUIG                                       
 ============================================================
 */
@@ -15,19 +15,26 @@
 
 //CONSTANTES
 
+//*inout.c
 #define STRLEN 256 //longitud del tipo string
 #define TABLEN 4 //numero de espacios que tiene un tabulado
 #define EOS '\0' //final de palabra
+//tipos de impresion
+#define INT 1
+#define DEC 2
+#define CHR 3
+#define STR 4
 
-#define OBJSIZ 256 //objects maximos guardados
+//*object.c
+#define OBJECTS 256 //objects maximos guardados
+#define NUL 0//constante del objeto nulo
 
-//tipos
-#define CONEXION 1 //conexion
-#define ABRIBLE 2 //abrible
-#define COGIBLE 4 //dice si es cogible
-#define COGEDOR 8 //puede coger objects
-#define LOCALIDAD 16 //todos los objects pueden estar aqui. las conexiones actuan
+//*flag.c
+#define FLAGS 256 //numero de banderas
 
+//*parser.c
+#define SYNS 256 //numero de sinonimos maximos por word
+#define WORDS 256 //numero de palabras de un array de palabras
 
 //MACROS
 
@@ -37,37 +44,33 @@
 
 //TIPOS
 
+//tipos generales
 typedef unsigned char u1;
 typedef signed char s1;
+typedef unsigned short u2;
+typedef signed short s2;
 
-typedef char string[STRLEN];
+typedef void (*Pre)(void);
+typedef void (*Post)(u1,char* []);
 
-struct object_s {
-	u1 type;
-	string name;
-	string description;
-	struct object_s* container;
-	u1 capacity; //cogedor
-	struct object_s* conector; //conector
-	struct { //abrible
-		u1 open;
-		struct object_s* key;
-	};
+struct object_t {
+	u1 id;
+	Pre pre; //funcion previa a las ordenes
+	Post post; //funcion posterior a las ordenes
 };
 
-typedef struct object_s* object;
-
-typedef u1 (*condition)(object);
+typedef u1 object;
 
 //VARIABLES
 
 //FUNCIONES
 
-//inout.c
-char* str(string s,const char* sc,...);
-//se crea un string nuevo
+//*inout.c
 
-void prt(string s);
+char* cpy(u1 len,char* dst,char* org);
+//copia org en dst con un maximo de longitud len
+
+void prt(u1 type,...);
 //impresion de la cadena
 
 void tab(u1 tabs);
@@ -76,63 +79,51 @@ void tab(u1 tabs);
 void nln(u1 lines);
 //impresion de saltos de linea
 
-char* inp(string s);
+char* inp(u1 len,char* s);
 //entrada de una cadena
 
-u1 seq(string a,string b);
+u1 seq(char* a,char* b);
 //comparacion de dos cadenas (1 si son iguales)
 
-//object.c
-object objnew(u1 t,char* n);
-//definicion de un nuevo object
+char* tlw(u1 len,char* d,char* o);
+//pasar a minusculas
 
-u1 objbycnd(u1 sos,object* os,condition c);
-//se devuelve un array de objetos que cumplen la condicion (devuelve !=0). 
-//Devuelve el tamaño del array.
-//sos es el tamaño maximo del array a considerar
+char*tcp(u1 len,char* d,char* o);
+//pasar a mayusculas
 
-s1 objsizcon(object a);
-//numero de objects contenido en un object a. Si es -1, el objeto no es cogedor
+//*object.c
 
-s1 objisvis(object p, object a);
-//dice si el object p  puede ver al object a
-//0: si
-//-1: no
+object objnew(u1 id,Pre pre,Post post);
+//definicion de un nuevo object, id=0 reservado al objeto nulo
 
-s1 objcandrp(object p,object c);
-//dice si un object puede coger otro
-//0: correcto
-//-1: p no es cogedor o no tiene capacidad
-//-2: c no es cogible
-//-3: c no es visible
-//-4: p contiene a c
+void objini(object o);
+//se establece el objeto inicial donde empieza el juego
 
-s1 objdrp(object p,object c);
-//el object p coge el object a
-//0: se coge
-//negativo: mirar objcantake
+void objnxt(object o);
+//establece el objeto siguiente que se ejecutara
 
-s1 objcango(object p,object s);
-//miramos si el object puede salir por la salida s
-//0: puede salir
-//-1: s no es una salida
-//-2: salida cerrada
+u1 objexe();
+//ejecuta el siguiente objeto actual, devolviendo 1 si este existe
 
-s1 objgo(object p,object s);
-//el object sigue la direccion y se establece en la localidad que toca
-//0: correcto
-//negativo: mirar objcango
+//*flag.c
 
-s1 objcanopn(object c,object k);
-//se intenta abrir un conector c con una llave k(si se necesita);
-//0: correcto
-//-1: c no es conector
-//-2: c esta abierta
-//-3: k no es la llave necesaria
+void flgset(u1 flg,u1 val);
+//establece el valor del flag
 
-s1 objopn(object c,object k);
-//se abre un conector con la llave
-//0: se abre
-//negativo: mirar objopn
+u1 flgget(u1 flg);
+//conseguimos el valor del flag
+
+u1 flgbop(u1 flg,char op,u1 val);
+//se hace la operacion binaria del flag con el valor val
+//&=and, |=or, ^=xor
+
+u1 flguop(u1 flg,char op);
+//se hace la operacion unaria con el flag
+//!=complemento a 2 ~=complemento a 1 >=desplazamiento derecha <=desplazamiento izquierda
+
+//*advmake.c
+
+void begin();
+//funcion que contiene todos los datos iniciales del programa
 
 #endif //ADVMAKE_H

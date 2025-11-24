@@ -2,24 +2,38 @@
 ============================================================
   Fichero: inout.c
   Creado: 19-11-2025
-  Ultima Modificacion: dimecres, 19 de novembre de 2025, 20:55:30
+  Ultima Modificacion: dilluns, 24 de novembre de 2025, 05:25:38
   oSCAR jIMENEZ pUIG                                       
 ============================================================
 */
 
 #include "advmake.h"
 
-char* str(string s,const char* sc,...) {
-	va_list list;
-	va_start(list,sc);
-	vsprintf(s,sc,list);
-	s[STRLEN-1]=0;
-	va_end(list);
-	return s;
+char* cpy(u1 l,char* d,char* o) {
+	char* pd=d;
+	char* po=o;
+	while(*po!=EOS && pd-d<l) *pd++=*po++;
+	*pd=EOS;
+	return d;
 }
 
-void prt(string s) {
-	printf(s);
+void prt(u1 t,...) {
+	va_list arg;
+	va_start(arg,t);
+	switch(t) {
+		case INT:
+			printf("%i",va_arg(arg,int));
+			break;
+		case DEC:
+			printf("%.2lf",va_arg(arg,double));
+			break;
+		case CHR:
+			printf("%c",va_arg(arg,int));
+			break;
+		case STR:
+			printf("%s",va_arg(arg,char*));
+			break;
+	}
 }
 
 void tab(u1 t) {
@@ -31,20 +45,20 @@ void tab(u1 t) {
 }
 
 void nln(u1 l) {
-	for(u1 k=0;k<l;k++) puts("");
+	for(u1 k=0;k<l;k++) printf("\n");
 }
 
-char* inp(string s) {
+char* inp(u1 len,char* s) {
 	char* p=s;
 	char c=0;
-	while(p-s<STRLEN-1 && (c=getchar())!='\n') {
+	while(p-s<len && (c=getchar())!='\n') {
 		*p++=c;
 	}
 	*p=EOS;
 	return s;
 }
 
-u1 seq(string a,string b) {
+u1 seq(char* a,char* b) {
 	char* pa=a;
 	char* pb=b;
 	while(*pa!=EOS) {
@@ -53,5 +67,32 @@ u1 seq(string a,string b) {
 		pb++;
 	}
 	return (*pb==EOS);
+}
+
+char* tlw(u1 l,char* d,char* o) {
+	char* po=o;
+	char* pd=d;
+	while(*po!=EOS && pd-d<l) {
+		*pd=(*po>='A' && *po<='Z')?(*po)-'A'+'a':*po;
+		pd++;
+		po++;
+	}
+	return d;
+}
+
+char* tcp(u1 l,char* d,char* o) {
+	char* po=o;
+	char* pd=d;
+	while(*po!=EOS && pd-d<l) {
+		*pd=(*po>='a' && *po<='z')?(*po)-'a'+'A':*po;
+		pd++;
+		po++;
+	}
+	return d;
+}
+
+//prueba
+
+int main() {
 }
 

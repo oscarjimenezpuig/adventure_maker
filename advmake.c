@@ -2,7 +2,7 @@
 ============================================================
   Fichero: advmake.c
   Creado: 17-11-2025
-  Ultima Modificacion: dimecres, 19 de novembre de 2025, 18:50:38
+  Ultima Modificacion: diumenge, 23 de novembre de 2025, 19:39:29
   oSCAR jIMENEZ pUIG                                       
 ============================================================
 */
@@ -10,5 +10,8 @@
 #include "advmake.h"
 
 int main() {
-		return 0;
+	lnkini();
+	begin();
+	while(objexe());
+	return 0;
 }

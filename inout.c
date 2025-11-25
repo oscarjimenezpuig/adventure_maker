@@ -2,12 +2,18 @@
 ============================================================
   Fichero: inout.c
   Creado: 19-11-2025
-  Ultima Modificacion: dilluns, 24 de novembre de 2025, 19:39:32
+  Ultima Modificacion: dimarts, 25 de novembre de 2025, 20:02:09
   oSCAR jIMENEZ pUIG                                       
 ============================================================
 */
 
 #include "advmake.h"
+
+u2 len(char* s) {
+	char* p=s;
+	while(*p!=EOS) p++;
+	return (p-s);
+}
 
 char* cpy(u1 l,char* d,char* o) {
 	char* pd=d;
@@ -58,7 +64,7 @@ char* inp(u1 len,char* s) {
 	return s;
 }
 
-u1 seq(char* a,char* b) {
+u1 equ(char* a,char* b) {
 	char* pa=a;
 	char* pb=b;
 	while(*pa!=EOS) {

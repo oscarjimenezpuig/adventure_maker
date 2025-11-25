@@ -2,7 +2,7 @@
 ============================================================
   Fichero: object.c
   Creado: 19-11-2025
-  Ultima Modificacion: dilluns, 24 de novembre de 2025, 20:30:32
+  Ultima Modificacion: dimarts, 25 de novembre de 2025, 20:26:11
   oSCAR jIMENEZ pUIG                                       
 ============================================================
 */
@@ -48,9 +48,8 @@ u1 objexe() {
 		if(oa->pre) {
 			oa->pre();
 			if(oa->post) {
-				char wrd[WRDS][WRDLEN];
-				u1 wrds=ask(wrd);	
-				oa->post(wrds,wrd);
+				ask();	
+				oa->post();
 			}
 			return 1;
 		};

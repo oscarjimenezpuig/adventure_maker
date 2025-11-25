@@ -2,12 +2,16 @@
 ============================================================
   Fichero: parser.c
   Creado: 24-11-2025
-  Ultima Modificacion: dilluns, 24 de novembre de 2025, 20:31:12
+  Ultima Modificacion: dimarts, 25 de novembre de 2025, 20:22:05
   oSCAR jIMENEZ pUIG                                       
 ============================================================
 */
 
 #include "advmake.h"
+
+char prompt[WRDLEN];
+u1 words=0;
+char word[WRDS][WRDLEN];
 
 static char* wrdget(char* wrd,char* snt) {
 	if(*snt!=EOS) {
@@ -31,23 +35,12 @@ u1 prssnt(u1 wrds,char wrd[][WRDLEN],char* snt) {
 	return n;
 }
 
-u1 ask(char wrd[][WRDLEN]) {
+void ask() {
 	char snt[256];
-	prt(STR,"Que quieres hacer? ");
+	prt(STR,prompt);
+	prt(CHR,' ');
 	inp(255,snt);
-	return prssnt(WRDS,wrd,snt);
-}
-
-//prueba
-
-int main() {
-	char* snt="Hola esto es una frase larga y cada vez se hace mas y mas larga";
-	char wrd[10][WRDLEN];
-	u1 dim=prssnt(10,wrd,snt);
-	for(u1 k=0;k<dim;k++) {
-		prt(STR,wrd[k]);
-		nln(1);
-	}
-	return 0;
+	tlw(255,snt,snt);
+	words=prssnt(WRDS,word,snt);
 }
 

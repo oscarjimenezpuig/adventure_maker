@@ -2,7 +2,7 @@
 ============================================================
   Fichero: advmake.h
   Creado: 17-11-2025
-  Ultima Modificacion: dilluns, 24 de novembre de 2025, 05:26:04
+  Ultima Modificacion: dilluns, 24 de novembre de 2025, 20:27:55
   oSCAR jIMENEZ pUIG                                       
 ============================================================
 */
@@ -16,7 +16,6 @@
 //CONSTANTES
 
 //*inout.c
-#define STRLEN 256 //longitud del tipo string
 #define TABLEN 4 //numero de espacios que tiene un tabulado
 #define EOS '\0' //final de palabra
 //tipos de impresion
@@ -33,14 +32,10 @@
 #define FLAGS 256 //numero de banderas
 
 //*parser.c
-#define SYNS 256 //numero de sinonimos maximos por word
-#define WORDS 256 //numero de palabras de un array de palabras
+#define WRDLEN 32 //longitud maxima de una palabra del parser
+#define WRDS 10 //numero de palabras maximas que acepta una pregunta
 
 //MACROS
-
-#define fin(F,A) ((F)|=(A))
-#define fis(F,A) (((F) & (A))!=0)
-#define fex(F,A) ((F)&=~(A))
 
 //TIPOS
 
@@ -51,7 +46,7 @@ typedef unsigned short u2;
 typedef signed short s2;
 
 typedef void (*Pre)(void);
-typedef void (*Post)(u1,char* []);
+typedef void (*Post)(u1,char [][WRDLEN]);
 
 struct object_t {
 	u1 id;
@@ -120,6 +115,14 @@ u1 flgbop(u1 flg,char op,u1 val);
 u1 flguop(u1 flg,char op);
 //se hace la operacion unaria con el flag
 //!=complemento a 2 ~=complemento a 1 >=desplazamiento derecha <=desplazamiento izquierda
+
+//*parser
+
+u1 prssnt(u1 wrds,char wrd[][WRDLEN],char* snt);
+//separa en palabras una frase, retorna el numero de palabras encontradas
+
+u1 ask(char wrd[][WRDLEN]);
+//se hace una pregunta sobre el que se quiere hacer y se recogen las palabras
 
 //*advmake.c
 

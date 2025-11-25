@@ -2,7 +2,7 @@
 ============================================================
   Fichero: object.c
   Creado: 19-11-2025
-  Ultima Modificacion: dilluns, 24 de novembre de 2025, 05:28:20
+  Ultima Modificacion: dilluns, 24 de novembre de 2025, 20:30:32
   oSCAR jIMENEZ pUIG                                       
 ============================================================
 */
@@ -45,10 +45,15 @@ void objnxt(object o) {
 u1 objexe() {
 	if(actual) {
 		struct object_t* oa=objects+actual;
-		//oa->pre();
-		//TODO Programar la orden ask que devuelve desde el parser una cadena de argumentos
-		//oa->post;
-		return 1;
+		if(oa->pre) {
+			oa->pre();
+			if(oa->post) {
+				char wrd[WRDS][WRDLEN];
+				u1 wrds=ask(wrd);	
+				oa->post(wrds,wrd);
+			}
+			return 1;
+		};
 	}
 	return 0;
 }

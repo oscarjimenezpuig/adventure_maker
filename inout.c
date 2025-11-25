@@ -2,7 +2,7 @@
 ============================================================
   Fichero: inout.c
   Creado: 19-11-2025
-  Ultima Modificacion: dilluns, 24 de novembre de 2025, 05:25:38
+  Ultima Modificacion: dilluns, 24 de novembre de 2025, 19:39:32
   oSCAR jIMENEZ pUIG                                       
 ============================================================
 */
@@ -89,10 +89,5 @@ char* tcp(u1 l,char* d,char* o) {
 		po++;
 	}
 	return d;
-}
-
-//prueba
-
-int main() {
 }
 
